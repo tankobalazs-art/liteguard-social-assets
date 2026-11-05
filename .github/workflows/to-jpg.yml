@@ -1,8 +1,11 @@
 name: to-jpg
 on:
   push:
-    paths: ['**/*.png', 'daily.py', '.github/workflows/to-jpg.yml']
+    paths: ['**/*.png', 'daily.py', 'late.py', '.github/workflows/to-jpg.yml']
   workflow_dispatch:
+concurrency:
+  group: to-jpg
+  cancel-in-progress: false
 permissions:
   contents: write
 jobs:
@@ -15,6 +18,7 @@ jobs:
           python-version: '3.12'
       - name: Convert images, split sheets, build schedule
         run: |
+          git pull --rebase origin main || true
           pip install -q pillow
           python - <<'PY'
           import glob, os
@@ -40,8 +44,9 @@ jobs:
                   save_pad(im.crop((i * w, 0, (i + 1) * w, im.height)), pid)
           PY
           if [ -f daily.py ]; then python daily.py; fi
+          if [ -f late.py ]; then python late.py; fi
           git config user.name github-actions
           git config user.email github-actions@users.noreply.github.com
           git add -A
           git diff --cached --quiet || git commit -m 'Convert images / build schedule'
-          git push
+          git push || (git pull --rebase origin main && git push)
