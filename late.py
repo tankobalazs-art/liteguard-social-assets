@@ -89,5 +89,9 @@ for p in posts:
     p["instagram_caption"] = p["instagram_caption"].replace(
         "LiteGuard – no-logs VPN for Android. Link in bio.",
         "LiteGuard – no-logs VPN for Android.\n👉 Get it: liteguard.co (link in bio)")
+import re
+for p in posts:
+    short = "https://bit.ly/4sGYll3" if p.get("slot") == "d" else "https://bit.ly/4kBmBmk"
+    p["facebook_message"] = re.sub(r"https://play\.google\.com/\S+", short, p["facebook_message"])
 json.dump(posts, open("schedule.json", "w"), ensure_ascii=False, indent=1)
 print(len(posts))
