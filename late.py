@@ -67,7 +67,7 @@ TONIGHT = [
   "The moment you join a public network, your apps start syncing — email, messages, logins.\n\nSwitch the VPN on first, then connect. Not the other way round.",
   "Which do you do first: Wi-Fi or VPN? 👇", True, "#privacytips #publicwifi #cybersecurity #vpn #android #techtips"),
  ("n1105c", "22:15", "Be honest: how many hours a day on your phone?",
-  "A) Under 2\nB) 2–4\nC) 4–6\nD) Don't ask 😅\n\nCheck Settings → Digital Wellbeing if you dare.",
+  "A) Under 1 hour\nB) 1–3 hours\nC) 3–5 hours\nD) 5+ hours 😅\n\nCheck Settings → Digital Wellbeing if you dare.",
   "Drop your letter 👇", False, "#screentime #phone #android #privacy #question"),
  ("n1105d", "22:45", "Thursday night. Everyone's on the same Wi-Fi.",
   "Bars, cafés, hotels: one network, a room full of strangers.\n\n" + PRODUCT,
