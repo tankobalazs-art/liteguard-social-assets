@@ -1,7 +1,7 @@
 name: to-jpg
 on:
   push:
-    paths: ['**/*.png', 'daily.py']
+    paths: ['**/*.png', 'daily.py', '.github/workflows/to-jpg.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -18,18 +18,26 @@ jobs:
           pip install -q pillow
           python - <<'PY'
           import glob, os
-          from PIL import Image, ImageOps
+          from PIL import Image, ImageOps, ImageFilter, ImageEnhance
           def save(im, folder):
               os.makedirs(folder, exist_ok=True)
               ImageOps.fit(im.convert('RGB'), (1080, 1350), Image.LANCZOS).save(
                   os.path.join(folder, 'post.jpg'), 'JPEG', quality=90, optimize=True)
+          def save_pad(im, folder):
+              os.makedirs(folder, exist_ok=True)
+              im = im.convert('RGB')
+              bg = im.resize((1080, 1350), Image.LANCZOS).filter(ImageFilter.GaussianBlur(45))
+              bg = ImageEnhance.Brightness(bg).enhance(0.85)
+              h = 1350; w = round(im.width * h / im.height)
+              bg.paste(im.resize((w, h), Image.LANCZOS), ((1080 - w) // 2, 0))
+              bg.save(os.path.join(folder, 'post.jpg'), 'JPEG', quality=90, optimize=True)
           for f in glob.glob('*/image.png'):
               save(Image.open(f), os.path.dirname(f))
           for f in glob.glob('sheets/*/image.png'):
               ids = os.path.basename(os.path.dirname(f)).split('_')
               im = Image.open(f); w = im.width // len(ids)
               for i, pid in enumerate(ids):
-                  save(im.crop((i * w, 0, (i + 1) * w, im.height)), pid)
+                  save_pad(im.crop((i * w, 0, (i + 1) * w, im.height)), pid)
           PY
           if [ -f daily.py ]; then python daily.py; fi
           git config user.name github-actions
