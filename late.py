@@ -85,5 +85,9 @@ for pid, tm, head, body, cta, link, tags in TONIGHT:
     ig = body + "\n\n" + cta + "\n\nLiteGuard – no-logs VPN for Android. Link in bio.\n.\n" + tags
     posts.append(dict(id=pid, date="2026-11-05", slot="x", time=tm, image_url=RAW.format(pid=pid),
                       facebook_message=fb, instagram_caption=ig, headline=head))
+for p in posts:
+    p["instagram_caption"] = p["instagram_caption"].replace(
+        "LiteGuard – no-logs VPN for Android. Link in bio.",
+        "LiteGuard – no-logs VPN for Android.\n👉 Get it: liteguard.co (link in bio)")
 json.dump(posts, open("schedule.json", "w"), ensure_ascii=False, indent=1)
 print(len(posts))
