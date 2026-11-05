@@ -1,0 +1,23 @@
+name: to-jpg
+on:
+  push:
+    paths: ['**/*.png']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Convert PNG to 1080x1350 JPEG
+        run: |
+          for f in $(find . -name '*.png' -not -path './.git/*'); do
+            d=$(dirname "$f")
+            convert "$f" -resize 1080x1350^ -gravity center -extent 1080x1350 -quality 90 -strip "$d/post.jpg"
+          done
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add -A
+          git diff --cached --quiet || git commit -m 'Convert images to JPEG'
+          git push
